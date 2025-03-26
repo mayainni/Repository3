@@ -5,7 +5,7 @@
 
 using namespace std;
 
-// Проверка, является ли введенная строка натуральным числом
+
 bool UserInputInt(const string& input) {
     if (input.empty()) return false;
 
@@ -20,7 +20,7 @@ bool UserInputInt(const string& input) {
     return true;
 }
 
-// Ввод натурального числа с проверкой
+
 int InputNatNumber() {
     string raw_input;
     int X;
@@ -38,20 +38,20 @@ int InputNatNumber() {
     }
 }
 
-// Проверка, начинается ли и заканчивается ли число одной и той же цифрой
+
 bool TrueFirstAndEndNumber(int X) {
     string strX = to_string(X);
     return strX.front() == strX.back();
 }
 
-// Проверка, заканчивается ли число нечетной цифрой
+
 bool TrueNecheEndNumber(int X) {
     int lastDigit = X % 10;
     return lastDigit % 2 != 0;
 }
 
 int main() {
-    int X = InputNatNumber(); // Ввод числа
+    int X = InputNatNumber(); 
 
     map<int, function<void()>> menu = {
         {1, [&]() { 
