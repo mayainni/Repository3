@@ -5,82 +5,86 @@
 
 using namespace std;
 
-function<void()> EnterNumberInt(int& varLink, string label){
-    return [&varLink, label](){
-        string raw_input;
-        cout << label << " = ";
-        getline(cin,raw_input);
-        while (!UserInputInt(raw_input))
-        {
-            cout << label << " = ";
-            getline(cin,raw_input);
-        }
-        varLink = stoi(raw_input);
-    };
+// Проверка, является ли введенная строка натуральным числом
+bool UserInputInt(const string& input) {
+    if (input.empty()) return false;
+
+    try {
+        int number = stoi(input);
+        if (number <= 0) return false;
+    }
+    catch (const exception&) { 
+        return false;
+    }
+
+    return true;
 }
 
-void InputNatNumber(){
+// Ввод натурального числа с проверкой
+int InputNatNumber() {
+    string raw_input;
     int X;
+    
     while (true) {
         cout << "Введите натуральное число X: ";
-        cin >> X;
+        getline(cin, raw_input);
 
-        
-        if (cin.fail() || X <= 0) {
-            cin.clear();
-            cin.ignore(10000, '\n');
-            cout << "Ошибка! Введите корректное натуральное число.\n";
-        } else {
+        if (UserInputInt(raw_input)) {
+            X = stoi(raw_input);
             return X;
         }
+
+        cout << "Ошибка! Введите корректное натуральное число.\n";
     }
 }
 
-bool TrueFerstAndEndNumber(int X){
+// Проверка, начинается ли и заканчивается ли число одной и той же цифрой
+bool TrueFirstAndEndNumber(int X) {
     string strX = to_string(X);
     return strX.front() == strX.back();
 }
 
-bool TrueNecheEndNumber(int X){
+// Проверка, заканчивается ли число нечетной цифрой
+bool TrueNecheEndNumber(int X) {
     int lastDigit = X % 10;
     return lastDigit % 2 != 0;
 }
 
-struct MenuItem {
-    string title;
-    function<void()> action;
-};
-
 int main() {
-    std::map<int, MenuItem> menu = {
-        {1, {"Task 1", InputNatNumber}},
-        {2, {"Task 2", TrueFerstAndEndNumber}},
-        {3, {"Task 3", TrueNecheEndNumber}}
-    }
-        
-int choice = 0;
-while (true) {
-    cout << "Menu: " << endl;
-    for (const auto& item : menu) {
-        cout << " " << item.first << ". " << item.second.title << endl;
-    }
-    cout << "0. Exit" << endl;
+    int X = InputNatNumber(); // Ввод числа
 
-    EnterNumberInt(choice, "Input number: ")();
-    if (choice == 0) {
-        cout << "© 2025 FirstName LastName" << endl;
-        break;
-    }
-    cout << endl;
+    map<int, function<void()>> menu = {
+        {1, [&]() { 
+            cout << "Число начинается и заканчивается одной и той же цифрой: " 
+                 << (TrueFirstAndEndNumber(X) ? "Да" : "Нет") << endl;
+        }},
+        {2, [&]() { 
+            cout << "Число заканчивается нечетной цифрой: " 
+                 << (TrueNecheEndNumber(X) ? "Да" : "Нет") << endl;
+        }}
+    };
 
-    if (menu.find(choice) != menu.end()) {
-        menu[choice].action();
-    }
-    else {
-        cout << "Oshibka." << endl;
+    while (true) {
+        cout << "\nМеню: \n";
+        cout << "1. Проверить, начинается и заканчивается ли число одной и той же цифрой\n";
+        cout << "2. Проверить, заканчивается ли число нечетной цифрой\n";
+        cout << "0. Выход\n";
+        cout << "Введите номер операции: ";
+
+        int choice;
+        cin >> choice;
+
+        if (choice == 0) {
+            cout << "© 2025 FirstName LastName\n";
+            break;
+        }
+
+        if (menu.find(choice) != menu.end()) {
+            menu[choice]();
+        } else {
+            cout << "Ошибка: неверный пункт меню.\n";
+        }
     }
 
-    cout << endl << endl;
-    }
     return 0;
 }
